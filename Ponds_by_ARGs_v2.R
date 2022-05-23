@@ -80,6 +80,7 @@ F8D = read.csv("data/genecalls/F8D_taxa_TPM_genecalls.tsv", sep = "\t", na.strin
 # define the levels of taxa in "Taxonomy"
 taxa = c("superkingdom","phylum","class","order","family","genus","species")
 
+# combine df with taxa groupings as new columns
 df1 = rbind(F1A,F1B,F1C,F1D,
             F2A,F2B,F2C,F2D,
             F3A,F3B,F3C,F3D,
@@ -89,14 +90,13 @@ df1 = rbind(F1A,F1B,F1C,F1D,
   separate(lineage, taxa, ";") %>%
   .[!is.na(.$Drug.Class), ] # rows with all NAs get introduced. I don't know why or how but this removes them
 
-
 # remove any "NA" in taxa columns with "Unclassified"
 df1[taxa][is.na(df1[taxa])] = "Unclassified"
 
-#remove the 1 plasmids with Nudged == True
+#remove Nudged == True
 ARGs = df1[!df1$Nudged %in% "True",]
 
-# remove plasmids with no abundance
+# remove no abundance
 ARGs = ARGs[ARGs$TPM_abundance > 0, ]
 
 # remove loose cut-off
@@ -104,15 +104,15 @@ ARGs = ARGs[! ARGs$Cut_Off %in% "Loose",]
 
 ### split multiple antibiotics ### 
 
-# if a gene conferes multiple resistances, split into new row copies with each resistance
+# if a gene confers multiple resistances, split into new row copies with each resistance
 ARGs.expand = ARGs %>% mutate(Drug.Class = strsplit(as.character(Drug.Class), "; ")) %>% unnest(Drug.Class)
 
 # remove the word "antibiotic" and any spaces from the Drug.Class column
 ARGs.expand$Drug.Class = str_trim(gsub("antibiotic", "", ARGs.expand$Drug.Class), side = c("both"))
 
-
-### split by multiple antibiotics but also divide TPM by drugclass count (multiple resistiances)
-## use if not plotting by drug class
+### if split by multiple antibiotics also divide TPM by drugclass count (multiple resistances)
+## therefore ARG TPM isn't doubled if split
+#use if not plotting by drug class
 
 ARGs_ARO_safe = ARGs %>% 
   mutate(count = str_count(Drug.Class, pattern = "; ")+1) %>%
