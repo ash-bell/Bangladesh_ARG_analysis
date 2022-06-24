@@ -93,14 +93,8 @@ df1 = rbind(F1A,F1B,F1C,F1D,
 # remove any "NA" in taxa columns with "Unclassified"
 df1[taxa][is.na(df1[taxa])] = "Unclassified"
 
-#remove Nudged == True
-ARGs = df1[!df1$Nudged %in% "True",]
-
 # remove no abundance
 ARGs = ARGs[ARGs$TPM_abundance > 0, ]
-
-# remove loose cut-off
-ARGs = ARGs[! ARGs$Cut_Off %in% "Loose",]
 
 ### split multiple antibiotics ### 
 
