@@ -14,6 +14,12 @@ library(lme4)
 library(jtools)
 library(pheatmap)
 library(gggenes)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rgeos)
+library(sp)
+library(maps)
 
 set.seed(1234)
 setwd("C:/Users/agb214/R files/ARG Project/")
@@ -42,6 +48,74 @@ clrs$Tarakanda = "#bcbd22"
 colScale <- scale_colour_manual(name = "pond",values = clrs)
 fillScale <- scale_fill_manual(name = "pond",values = clrs)
 
+
+metadata = read.csv("~/../R files/ARG Project/metadata/BD_fish_ponds_pooled_samples_for_metagenome_seq.csv")
+
+### Figure 1 
+############ World Map #####################
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# co-ordinates are rounded up to preseve farmer anonomity
+metadata = 
+  metadata %>%
+  mutate(latitude = ifelse(Village == "Kandulia", 24.8,
+                           ifelse(Village == "Malotipur", 24.7,
+                                  ifelse(Village == "Bamunpara", 24.8,
+                                         ifelse(Village == "Gopalpur", 24.5,
+                                                ifelse(Village == "Fulbaria", 24.6, NA)))))) %>%
+  mutate(longitude = ifelse(Village == "Kandulia", 90.7,
+                          ifelse(Village == "Malotipur", 90.2,
+                                 ifelse(Village == "Bamunpara", 90.0,
+                                        ifelse(Village == "Gopalpur", 89.9,
+                                               ifelse(Village == "Fulbaria", 90.2, NA)))))) %>%
+  mutate(Village = ifelse(Village == "Kandulia", "Kandulia\n(F1, F2)",
+                           ifelse(Village == "Malotipur", "Malatipur\n(F3)",
+                                  ifelse(Village == "Bamunpara", "Bamunpara\n(F4)",
+                                         ifelse(Village == "Gopalpur", "Gopalpur\n(F6)",
+                                                ifelse(Village == "Fulbaria", "Fulbaria\n(F8)", NA))))))
+
+village = distinct(metadata, Village, .keep_all = T)
+
+metadata = st_as_sf(metadata, coords = c("longitude", "latitude"), 
+                      crs = 4326, agr = "constant")
+
+# Upazila Shapefile from here https://geodash.gov.bd/layers/geonode:administrative_boundary_of_bangladesh_upazila_level
+Upazila2 = read_sf("~/../Downloads/administrative_boundary_of_bangladesh_upazila_level/administrative_boundary_of_bangladesh_upazila_level.shp")
+
+ggplot(data=Upazila2) +
+  geom_sf(aes(fill = ifelse(NAME_4=="Jamalpur S.", 'Jamalpur S', "green")))
+
+p1 = 
+ggplot(data = world) +
+  geom_sf() +
+  geom_sf(data = Upazila2, aes(fill = ifelse(NAME_4=="Muktagachha", 'Muktagacha',
+                                             ifelse(NAME_4=="Jamalpur S.", 'Jamalpur Sadar',
+                                                    ifelse(NAME_4=="Phulpur", 'Tarakanda',
+                                                           ifelse(NAME_3=="Nasirabad", 'Mymensingh', NA)))))) +
+  scale_fill_manual(values=c('#DD4B3E', '#1EA362', '#F6CF65', '#4A89F3'), name="Regions") +
+  coord_sf(xlim = c(88, 93), ylim = c(21, 27)) +
+  theme(legend.position = "none")
+
+p2 = 
+ggplot(data = world) +
+  geom_sf() +
+  geom_sf(data = Upazila2, aes(fill = ifelse(NAME_4=="Muktagachha", 'Muktagacha',
+                                             ifelse(NAME_4=="Jamalpur S.", 'Jamalpur Sadar',
+                                                    ifelse(NAME_4=="Phulpur", 'Tarakanda',
+                                                           ifelse(NAME_3=="Nasirabad", 'Mymensingh', NA)))))) +
+  geom_sf(data = metadata) +
+  geom_label_repel(data = village, aes(x=longitude, y=latitude, label=Village), force = 100) +
+  scale_fill_manual(values=c('#DD4B3E', '#1EA362', '#F6CF65', '#4A89F3'), name="Regions") +
+  coord_sf(xlim = c(89.75, 91.25), ylim = c(24.25,25.25)) +
+  theme(legend.position = "bottom")
+
+
+plot = plot_grid(p1, p2, labels = c("A","B"),
+          rel_widths = c(1,3),
+          rel_heights = c(3,1))
+
+
+### Fish diagram (Figure 1B constructed in affinty Designer)
 
 ### Figure 2, Supplimentary figure 1 and 2. ###
 ### Relative abundance barplots by ponds using reads ###
