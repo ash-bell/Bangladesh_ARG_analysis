@@ -542,7 +542,26 @@ ggplot(df, aes(x=sample, y=TPM_abundance, fill=Drug.Class)) +
   xlab("Sample")
 
 ### Supplimentary Figure 3 ###
-### ARG abundance ### 
+### ARG abundance by upazila as boxplots ###
+ARGs_ex.adef = 
+  subset(ARGs.expand, Best_Hit_ARO != "adeF")
+
+ARGs_ex.adef %>% 
+  inner_join(metadata, by = "SampleID") %>%
+  group_by(Drug.Class, sample, Upazila) %>% 
+  summarise(sum = sum(TPM_abundance), .groups = "drop") %>%
+  ggplot(., aes(fill = Drug.Class, y = sum, x = Upazila)) +
+  #geom_bar(position = "dodge", stat = "identity") +
+  geom_boxplot() +
+  colScale +
+  facet_wrap(~Drug.Class, ncol = 6) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none") +
+  labs(x = "Upazila", y = "Abundance (TPM)")
+
+### Supplimentary Figure 4 ###
+### ARG abundance by gene and pond sample ###
 ARGs_ex.adef = 
   subset(ARGs.expand, Best_Hit_ARO != "adeF")
 
@@ -556,7 +575,7 @@ ggplot(ARGs_ex.adef, aes(fill=Drug.Class, y=TPM_abundance, x=sample)) +
   ylab("Abundance (TPM) \nARGs within ponds summarised by antibiotic class") +
   xlab("Sample")
 
-### Supplimentary figure 4 ### 
+### Supplimentary figure 5 ### 
 ### plasmid annotation ###
 
 clrs3 = c("#911eb4","#e6194B","#ffe119","#4363d8","#000000","#f58231","#FFFFFF")
@@ -576,7 +595,7 @@ ggplot(plas_strict, aes(xmin=start, xmax=end, y=sample,
   theme_genes()
 
 
-### Supplimentary Figure 5 ####
+### Supplimentary Figure 6 ####
 ### ARGs by phyla ####
 genus_ARGS = 
   ARGs.expand %>% 
