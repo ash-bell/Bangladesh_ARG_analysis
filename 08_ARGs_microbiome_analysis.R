@@ -654,7 +654,7 @@ ggplot(plas_strict, aes(xmin=start, xmax=end, y=sample,
   facet_wrap(~ sample, scales = "free", ncol = 1) +
   fillScale +
   theme_genes()
-
+# edited in affinity desinger for clarity
 
 ### Supplimentary Figure 6 ####
 ### ARGs by phyla ####
@@ -676,12 +676,11 @@ colScale <- scale_fill_manual(name = "Conferred resistance",values = new_clrs)
   
 ggplot(genus_ARGS, aes(x=phylum, y=perc*100, fill=Drug.Class)) +
   geom_bar(position = "stack", stat = "identity") +
-  facet_grid(~phylum, space = "free", scales = "free") +
   ylab("Percentage of ARGs conferring resistance to different antibiotic drug classes") +
   xlab("Bacterial Phylum") +
   colScale
 
-### Supplimentary Table 1 ###
+### Supplimentary Table 2 ###
 ARGs_ex.adef %>%
   group_by(SampleID, Drug.Class) %>%
   summarise(Total_TPM_abundance = sum(TPM_abundance), .groups = "drop") %>%
@@ -691,7 +690,7 @@ ARGs_ex.adef %>%
 
 ### Supplimentary Table 2 from 06_recA_abundance.sh line 4
 
-### Supplimentary Table 3 ###
+### Supplimentary Table 4 ###
 ARGs_ARO_safe %>%
   group_by(Best_Hit_ARO, sample) %>%
   summarise(sum = sum(TPM_abundance), .groups = "drop") %>%
