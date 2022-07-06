@@ -21,35 +21,103 @@ library(rgeos)
 library(sp)
 library(maps)
 
+### Setup ###
 set.seed(1234)
 setwd("C:/Users/agb214/R files/ARG Project/")
-
 source("scripts/07_ARG_read_plasmid_preprocessing.R")
 
-metadata = read_csv("metadata/BD_fish_ponds_pooled_samples_for_metagenome_seq.csv") %>%
+### Define my sample labels ###
+sample_levels = c("F1_Mon","F1_PosMon","F1_Win","F1_PreMon",
+                  "F2_Mon","F2_PosMon","F2_Win","F2_PreMon",
+                  "F3_Mon","F3_PosMon","F3_Win","F3_PreMon",
+                  "F4_Mon","F4_PosMon","F4_Win","F4_PreMon",
+                  "F5_Mon","F5_PosMon","F5_Win","F5_PreMon",
+                  "F6_Mon","F6_PosMon","F6_Win","F6_PreMon")
+
+### Read Metadata table ###
+metadata = read_csv("/metadata/BD_fish_ponds_pooled_samples_for_metagenome_seq.csv") %>%
   select("SampleID","Farmer","Ponds","Main_crop","Village","Upazila","Timepoints","Dates","Season","Samples_in_pool") %>%
   mutate(Season = gsub("_", " ", Season),
          Upazila = gsub("_", " ", Upazila)) %>% 
+  mutate(SampleID = gsub("A$", "_Mon", SampleID)) %>%
+  mutate(SampleID = gsub("B$", "_PosMon", SampleID)) %>%
+  mutate(SampleID = gsub("C$", "_Win", SampleID)) %>%
+  mutate(SampleID = gsub("D$", "_PreMon", SampleID)) %>%
+  mutate(SampleID = gsub("^F8", "F5", SampleID)) %>%
+  mutate(Farmer = gsub("^F8$", "F5", Farmer)) %>% # rename Farm F8 to F5 so farm order increases numerically
   arrange(SampleID)
 
+metadata$SampleID = factor(metadata$SampleID, levels = sample_levels)
+
+### Ensure the samples labels from all input data is defined how I want them ###
+reads = reads %>%
+  mutate(sample = gsub("A$", "_Mon", sample)) %>%
+  mutate(sample = gsub("B$", "_PosMon", sample)) %>%
+  mutate(sample = gsub("C$", "_Win", sample)) %>%
+  mutate(sample = gsub("D$", "_PreMon", sample)) %>%
+  mutate(sample = gsub("^F8", "F5", sample)) %>%
+  mutate(farm = gsub("^F8$", "F5", farm)) %>%
+  arrange(sample)
+
+reads$sample = factor(reads$sample, levels = sample_levels)
+
+ARGs.expand = ARGs.expand %>%
+  mutate(sample = gsub("A$", "_Mon", sample)) %>%
+  mutate(sample = gsub("B$", "_PosMon", sample)) %>%
+  mutate(sample = gsub("C$", "_Win", sample)) %>%
+  mutate(sample = gsub("D$", "_PreMon", sample)) %>%
+  mutate(sample = gsub("^F8", "F5", sample)) %>%
+  arrange(sample)
+
+ARGs.expand$sample = factor(ARGs.expand$sample, levels = sample_levels)
+
+ARGs_ARO_safe = ARGs_ARO_safe %>%
+  mutate(sample = gsub("A$", "_Mon", sample)) %>%
+  mutate(sample = gsub("B$", "_PosMon", sample)) %>%
+  mutate(sample = gsub("C$", "_Win", sample)) %>%
+  mutate(sample = gsub("D$", "_PreMon", sample)) %>%
+  mutate(sample = gsub("^F8", "F5", sample)) %>%
+  arrange(sample)
+
+ARGs_ARO_safe$sample = factor(ARGs_ARO_safe$sample, levels = sample_levels)
+
+reads_by_genus = reads_by_genus %>%
+  mutate(sample = gsub("A$", "_Mon", sample)) %>%
+  mutate(sample = gsub("B$", "_PosMon", sample)) %>%
+  mutate(sample = gsub("C$", "_Win", sample)) %>%
+  mutate(sample = gsub("D$", "_PreMon", sample)) %>%
+  mutate(sample = gsub("^F8", "F5", sample)) %>%
+  arrange(sample)
+
+reads_by_genus$sample = factor(reads_by_genus$sample, levels = sample_levels)
+
+KEGGs = KEGGs %>%
+  mutate(SampleID = gsub("A$", "_Mon", SampleID)) %>%
+  mutate(SampleID = gsub("B$", "_PosMon", SampleID)) %>%
+  mutate(SampleID = gsub("C$", "_Win", SampleID)) %>%
+  mutate(SampleID = gsub("D$", "_PreMon", SampleID)) %>%
+  mutate(SampleID = gsub("^F8", "F5", SampleID)) %>%
+  arrange(SampleID)
+
+KEGGs$SampleID = factor(KEGGs$SampleID, levels = sample_levels)
+
+
+### Define the colours of my villages and upazilas ### 
 clrs = c(rep('#e6194B', 4),
          rep('#3cb44b', 4),
          rep('#ffe119', 4),
          rep('#4363d8', 4),
-         rep('#f58231', 4),
-         rep('#911eb4', 4))
+         rep('#911eb4', 4),
+         rep('#f58231', 4))
 names(clrs) = unique(reads$sample)
 farms = unique(clrs)
-names(farms) = c(1,2,3,4,6,8)
+names(farms) = c(1,2,3,4,5,6)
 clrs = append(clrs,farms)
 clrs$`Jamalpur Sadar` = "#e377c2"
 clrs$Muktagacha = "#17becf"
 clrs$Tarakanda = "#bcbd22"
 colScale <- scale_colour_manual(name = "pond",values = clrs)
 fillScale <- scale_fill_manual(name = "pond",values = clrs)
-
-
-metadata = read.csv("~/../R files/ARG Project/metadata/BD_fish_ponds_pooled_samples_for_metagenome_seq.csv")
 
 ### Figure 1 
 ############ World Map #####################
@@ -72,7 +140,7 @@ metadata =
                            ifelse(Village == "Malotipur", "Malatipur\n(F3)",
                                   ifelse(Village == "Bamunpara", "Bamunpara\n(F4)",
                                          ifelse(Village == "Gopalpur", "Gopalpur\n(F6)",
-                                                ifelse(Village == "Fulbaria", "Fulbaria\n(F8)", NA))))))
+                                                ifelse(Village == "Fulbaria", "Fulbaria\n(F5)", NA))))))
 
 village = distinct(metadata, Village, .keep_all = T)
 
@@ -82,19 +150,16 @@ metadata = st_as_sf(metadata, coords = c("longitude", "latitude"),
 # Upazila Shapefile from here https://geodash.gov.bd/layers/geonode:administrative_boundary_of_bangladesh_upazila_level
 Upazila2 = read_sf("~/../Downloads/administrative_boundary_of_bangladesh_upazila_level/administrative_boundary_of_bangladesh_upazila_level.shp")
 
-ggplot(data=Upazila2) +
-  geom_sf(aes(fill = ifelse(NAME_4=="Jamalpur S.", 'Jamalpur S', "green")))
-
 p1 = 
 ggplot(data = world) +
   geom_sf() +
   geom_sf(data = Upazila2, aes(fill = ifelse(NAME_4=="Muktagachha", 'Muktagacha',
                                              ifelse(NAME_4=="Jamalpur S.", 'Jamalpur Sadar',
                                                     ifelse(NAME_4=="Phulpur", 'Tarakanda',
-                                                           ifelse(NAME_3=="Nasirabad", 'Mymensingh', NA)))))) +
-  scale_fill_manual(values=c('#DD4B3E', '#1EA362', '#F6CF65', '#4A89F3'), name="Regions") +
-  coord_sf(xlim = c(88, 93), ylim = c(21, 27)) +
-  theme(legend.position = "none")
+                                                           ifelse(NAME_2=="Mymensingh", 'Mymensingh', 
+                                                                  ifelse(NAME_2=="Jamalpur", 'Mymensingh', NA))))))) +
+  scale_fill_manual(values=c('#e377c2', '#17becf', '#dddddd', '#bcbd22'), name="Regions") +
+  coord_sf(xlim = c(88, 92.72), ylim = c(21, 26.5))
 
 p2 = 
 ggplot(data = world) +
@@ -102,13 +167,14 @@ ggplot(data = world) +
   geom_sf(data = Upazila2, aes(fill = ifelse(NAME_4=="Muktagachha", 'Muktagacha',
                                              ifelse(NAME_4=="Jamalpur S.", 'Jamalpur Sadar',
                                                     ifelse(NAME_4=="Phulpur", 'Tarakanda',
-                                                           ifelse(NAME_3=="Nasirabad", 'Mymensingh', NA)))))) +
-  geom_sf(data = metadata) +
-  geom_label_repel(data = village, aes(x=longitude, y=latitude, label=Village), force = 100) +
-  scale_fill_manual(values=c('#DD4B3E', '#1EA362', '#F6CF65', '#4A89F3'), name="Regions") +
-  coord_sf(xlim = c(89.75, 91.25), ylim = c(24.25,25.25)) +
-  theme(legend.position = "bottom")
-
+                                                           ifelse(NAME_2=="Mymensingh", 'Mymensingh', 
+                                                                  ifelse(NAME_2=="Jamalpur", 'Mymensingh', NA))))))) +
+  scale_fill_manual(values=c('#e377c2', '#17becf', '#dddddd', '#bcbd22'), name="Regions") +
+  geom_sf(data = metadata, aes(size = 1)) +
+  geom_label_repel(data = village, label.size = 2, aes(x=longitude, y=latitude, label=Village, colour=Village), force = 75) +
+  scale_colour_manual(values=c('#4363d8', '#911eb4', '#f58231', '#e6194B', '#3cb44b', '#ffe119'), name="Villages") +
+  coord_sf(xlim = c(89.7, 91.2), ylim = c(24.3,25.2)) +
+  theme(legend.position = "bottom", legend.box = "vertical")
 
 plot = plot_grid(p1, p2, labels = c("A","B"),
           rel_widths = c(1,3),
@@ -117,7 +183,7 @@ plot = plot_grid(p1, p2, labels = c("A","B"),
 
 ### Fish diagram (Figure 1B constructed in affinty Designer)
 
-### Figure 2, Supplimentary figure 1 and 2. ###
+### Figure 2, Supplimentary Figures 1 and 2. ###
 ### Relative abundance barplots by ponds using reads ###
 
 clrs2 = c('#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', 
@@ -139,14 +205,15 @@ bac  = reads %>%
   ungroup() %>%
   select(-sum_rel_abund)
 
-bac.plot = ggplot(bac, aes(x=sample, y=perc_sum_rel_abund*100, fill=phylum)) +
+bac.plot = ggplot(bac, aes(x=as.factor(sample), y=perc_sum_rel_abund*100, fill=phylum)) +
   geom_bar(stat = "identity", position = "stack") +
   labs(y = "Percentage relative abundance (reads)",
        x = "Sample",
        fill="Phylum") +
   scale_fill_manual(values = clrs2) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(axis.text.x=element_text(angle = 90, hjust=1, vjust = 0),
+        legend.position = "bottom")
 
 vir = reads %>%
   select(superkingdom, phylum, sample, rel_abund) %>%
@@ -169,7 +236,8 @@ vir.plot = ggplot(vir, aes(x=sample, y=perc_sum_rel_abund*100, fill=phylum)) +
        fill="Phylum") +
   scale_fill_manual(values = clrs2) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(axis.text.x=element_text(angle = 90, hjust=1, vjust = 0),
+        legend.position = "bottom")
 
 arc = reads %>%
   select(superkingdom, phylum, sample, rel_abund) %>%
@@ -192,15 +260,13 @@ arc.plot = ggplot(arc, aes(x=sample, y=perc_sum_rel_abund*100, fill=phylum)) +
        fill="Phylum") +
   scale_fill_manual(values = clrs2) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(axis.text.x=element_text(angle = 90, hjust=1, vjust = 0),
+        legend.position = "bottom")
 
 
 
 ### Figure 3 ###
 ### alpha diversity ###
-
-
-
 sample_by_genus = pivot_wider(reads_by_genus %>% select(sample, genus, rel_abund), names_from = genus, values_from = rel_abund)
 sample_by_genus[is.na(sample_by_genus)] = 0
 
@@ -277,7 +343,7 @@ alpha.div = data.frame(shannon, simpson, inv.simpson, chao1, evenness)
 alpha.div$SampleID = sample_by_genus$sample
 alpha.div = merge(alpha.div, metadata, on="SampleID")
 
-## run linear (mixed) models to check for significants
+### run linear (mixed) models to check for significants, Output at Supplimentary table 1 ###
 Farmer = summ(lm(shannon ~ Farmer, data=alpha.div), confint = T, digits = 3)
 Main_crop = summ(lmer(shannon ~ Main_crop + (1|Farmer), data=alpha.div), confint = T)
 Upazila = summ(lmer(shannon ~ Upazila + (1|Farmer), data=alpha.div), confint = T)
@@ -404,37 +470,32 @@ plot_grid(BD_farm, BD_upazila,
           ncol = 1)
 
 ### run a pairwise PERMANONVA to determine which Upazila is signifcantly different from the other
+### from here https://github.com/pmartinezarbizu/pairwiseAdonis
 source("C:/Users/agb214/R files/ARG Project/scripts/pairwise.adonis.R")
 summary(pairwise.adonis(dist_matrix, metadata$Upazila, p.adjust.m='BH'))
 
 ### Figure 5 ###
 ### KEGG pathway map ###
-Cat2 <- KEGGs %>% 
-  group_by(SampleID, Cat2_Name) %>%
+
+### removal of human or unknown pathways not in microorganisms
+KEGGs = KEGGs[KEGGs$Cat1_Name != "Human Diseases", ]
+KEGGs = KEGGs[KEGGs$Cat1_Name != "Not Included in Pathway or Brite", ]
+KEGGs = KEGGs[KEGGs$Cat1_Name != "Brite Hierarchies", ]
+KEGGs = KEGGs[KEGGs$Cat1_Name != "Organismal Systems", ]
+KEGGs = KEGGs[KEGGs$Cat1_Name != "NA", ]
+
+# groupby and summarise by sample and category 
+Cat2 <- df %>% 
+  dplyr::group_by(SampleID, Cat2_Name) %>%
   summarise(TPM_sum = sum(TPM), .groups = "drop") %>%
   pivot_wider(names_from = Cat2_Name, values_from = TPM_sum) %>%
+  drop_na(SampleID) %>%
   column_to_rownames(var = "SampleID") %>%
   replace(is.na(.), 0) %>%
-  select(-`Not included in regular maps`, 
-         -`Poorly characterized`,
-         -`Cardiovascular disease`,
-         -`NA`,
-         -`Neurodegenerative disease`,
-         -`Excretory system`,
-         -`Endocrine and metabolic disease`,
-         -`Endocrine system`,
-         -`Digestive system`,
-         -`Cancer: overview`,
-         -`Cancer: specific types`,
-         -`Nervous system`,
-         -`Circulatory system`,
-         -`Immune disease`,
-         -`Immune system`,
-         -`Aging`) %>%
-  select(order(colSums(.), decreasing = T)) %>%
   scale(center = T, scale = T)
 
 Cat2 <- Cat2[, which(colSums(Cat2) != 0)]
+Cat2 = Cat2[, order(colSums(-Cat2))]
 
 pheatmap(Cat2, scale = "none", cluster_rows = F)
 adonis(Cat2 ~ substr(rownames(Cat2), 1, 2))
