@@ -24,7 +24,7 @@ rm temp.fq.gz; ln -s filtered.fq.gz temp.fq.gz
 #2) common animal contaminants (Human, cat, dog, mouse)
 
 #Human
-bbmap.sh build=1 path=$PATH/metag/ashley/eDNA/read_processing minid=0.95 maxindel=3 bwr=0.16 bw=12 quickmatch fast minhits=2 qtrim=rl trimq=10 untrim in=temp.fq.gz outu=ex_human.fq.gz threads=8 -Xmx1000g
+bbmap.sh build=1 path=$WKDIR/metag/ashley/eDNA/read_processing minid=0.95 maxindel=3 bwr=0.16 bw=12 quickmatch fast minhits=2 qtrim=rl trimq=10 untrim in=temp.fq.gz outu=ex_human.fq.gz threads=8 -Xmx1000g
 rm temp.fq.gz; ln -s ex_human.fq.gz temp.fq.gz
 
 #Error-correct phase 1
