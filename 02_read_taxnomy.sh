@@ -22,7 +22,7 @@ $PATH/agb214/ARG_bangladesh_ponds/read_mapping/read_taxonomy/REPLACE_ME_qtrimmed
 $PATH/agb214/ARG_bangladesh_ponds/read_mapping/read_taxonomy/REPLACE_ME_qtrimmed.rev.fq.gz > REPLACE_ME_qtrimmed_kraken.out
 
 # get taxid of unpaired reads
-kraken2 --db /lustre/projects/Research_Project-172179/metag/ashley/tools/kraken2/2022_02_11_DB/kraken2_db/ \
+kraken2 --db $PATH/ashley/tools/kraken2/2022_02_11_DB/kraken2_db/ \
 --threads 16 \
 --gzip-compressed \
 $PATH/agb214/ARG_bangladesh_ponds/read_mapping/read_taxonomy/REPLACE_ME_merged.fq.gz > REPLACE_ME_merged_kraken.out
