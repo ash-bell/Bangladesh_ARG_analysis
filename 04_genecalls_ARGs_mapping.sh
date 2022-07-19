@@ -12,17 +12,17 @@ rgi main \
 
 ### get gene abundance using bbmap ###
 # map forward and reverse reads to gene calls from RGI
-bbmap.sh ref=$PATH/agb214/ARG_bangladesh_ponds/read_mapping/genecalls/SAMPLE_nucl.fna \
+bbmap.sh ref=$WKDIR/agb214/ARG_bangladesh_ponds/read_mapping/genecalls/SAMPLE_nucl.fna \
 build=GENECALLS \ # each gene called metagenome is referenced as a number (SAMPLE_nucl.fna). F1A = 1; F8D = 24. Allows indexing from the same folder
-path=$PATH/agb214/ARG_bangladesh_ponds/read_mapping/protein_mappings/ \
-in=$PATH/agb214/ARG_bangladesh_ponds/10218_SAMPLE/qtrimmed.fq.gz \
+path=$WKDIR/agb214/ARG_bangladesh_ponds/read_mapping/protein_mappings/ \
+in=$WKDIR/agb214/ARG_bangladesh_ponds/10218_SAMPLE/qtrimmed.fq.gz \
 out=SAMPLE_genecalls_vs_SAMPLE_qtrimmed.bam
 
 # map unpaired reads to gene calls from RGI
-bbmap.sh ref=$PATH/agb214/ARG_bangladesh_ponds/read_mapping/genecalls/SAMPLE_nucl.fna \
+bbmap.sh ref=$WKDIR/agb214/ARG_bangladesh_ponds/read_mapping/genecalls/SAMPLE_nucl.fna \
 build=GENECALLS \
-path=$PATH/agb214/ARG_bangladesh_ponds/read_mapping/protein_mappings/ \
-in=$PATH/agb214/ARG_bangladesh_ponds/10218_SAMPLE/merged.fq.gz \
+path=$WKDIR/agb214/ARG_bangladesh_ponds/read_mapping/protein_mappings/ \
+in=$WKDIR/agb214/ARG_bangladesh_ponds/10218_SAMPLE/merged.fq.gz \
 out=SAMPLE_genecalls_vs_SAMPLE_merged.bam
 
 #merge the unpaired and pair read abundances together into one bam file
