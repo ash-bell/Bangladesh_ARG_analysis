@@ -23,5 +23,6 @@ Keywords: Antimicrobial resistance, Bangladesh, fish pond, microbiome, aquacultu
 *	Farming practices strongly influence microbial and ARG compositions
 *	Identified ARGs question antibiotic treatment of disease in rural aquaculture
 
+Figure 1. A) Regional map of the Mymensingh division of North-central Bangladesh. Fish farm locations within villages are labelled F1, F2, F3, F4, F5, F6 and corresponding Upazilas are highlighted with an inset showing a map of Bangladesh with the Mymensingh division highlighted in light grey. Farm locations are jittered slightly to preserve farmer anonymity. B) Sampling regime schematic with pond water samples collected and pooled from six different Bangladesh finfish aquaculture farms (two or three ponds per farm) in three Upazilas and over four seasonal periods.
+
 ![Regional map of the Mymensingh division of North-central Bangladesh](Experimental_design_large.jpg?raw=true "Regional map of the Mymensingh division of North-central Bangladesh")
-### Figure 1. A) Regional map of the Mymensingh division of North-central Bangladesh. Fish farm locations within villages are labelled F1, F2, F3, F4, F5, F6 and corresponding Upazilas are highlighted with an inset showing a map of Bangladesh with the Mymensingh division highlighted in light grey. Farm locations are jittered slightly to preserve farmer anonymity. B) Sampling regime schematic with pond water samples collected and pooled from six different Bangladesh finfish aquaculture farms (two or three ponds per farm) in three Upazilas and over four seasonal periods.
