@@ -1,6 +1,6 @@
 # The Diversity and Ubiquity of Antibiotic Resistant Genes in Finfish Culture Ponds in Bangladesh
 
-$Ashley G. Bell^{a,b*}$, Kelly Thornber^{a,b}, Dominique L. Chaput^{a,b}, Neaz A. Hasan^{c}, Md. Mehedi Alam^{c}, Mohammad Mahfujul Haque^{c}, Jo Cable^{d}, Ben Temperton^{a, Charles R. Tyler^{a,b}$
+Ashley G. Bell<sup>^{a,b*}</sup>, Kelly Thornber^{a,b}, Dominique L. Chaput^{a,b}, Neaz A. Hasan^{c}, Md. Mehedi Alam^{c}, Mohammad Mahfujul Haque^{c}, Jo Cable^{d}, Ben Temperton^{a, Charles R. Tyler^{a,b}$
 
 ^a College of Life & Environmental Sciences, The University of Exeter, Exeter, Devon, EX4 4QD, United Kingdom
 
