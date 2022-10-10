@@ -1,6 +1,6 @@
 # The Diversity and Ubiquity of Antibiotic Resistant Genes in Finfish Culture Ponds in Bangladesh
 
-Ashley G. Bell<sup>a,b*</sup>, Kelly Thornber<sup>a,b</sup>, Dominique L. Chaput<sup>a,b</sup>, Neaz A. Hasan<sup>c</sup>, Md. Mehedi Alam<sup>c</sup>, Mohammad Mahfujul Haque<sup>c</sup>, Jo Cable<sup>d</sup>, Ben Temperton<sup>a, Charles R. Tyler<sup>a,b</sup>
+Ashley G. Bell<sup>a,b*</sup>, Kelly Thornber<sup>a,b</sup>, Dominique L. Chaput<sup>a,b</sup>, Neaz A. Hasan<sup>c</sup>, Md. Mehedi Alam<sup>c</sup>, Mohammad Mahfujul Haque<sup>c</sup>, Jo Cable<sup>d</sup>, Ben Temperton<sup>a</sup>, Charles R. Tyler<sup>a,b</sup>
 
 <sup>a</sup> College of Life & Environmental Sciences, The University of Exeter, Exeter, Devon, EX4 4QD, United Kingdom
 
@@ -22,3 +22,5 @@ Keywords: Antimicrobial resistance, Bangladesh, fish pond, microbiome, aquacultu
 *	ARGs were present in plasmids and taxa-associated pathogens
 *	Farming practices strongly influence microbial and ARG compositions
 *	Identified ARGs question antibiotic treatment of disease in rural aquaculture
+
+![Alt text](relative/path/to/img.jpg?raw=true "Title")
